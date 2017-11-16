@@ -27,9 +27,34 @@ namespace Player
         /// </summary>
         public void Start()
         {
+            Rigidbody2D rb = GetComponent<Rigidbody2D>();
+            ForceWeight(rb);
             score = 0;
             SetCountText();
         }
+
+        private static void ForceWeight(Rigidbody2D rb)
+        {
+            rb.mass = 10;
+            float mass = rb.mass;
+
+            float inertia = rb.inertia;
+            Vector2 velocity = rb.velocity;
+
+
+
+        }
+
+        public static float GetEnergy(float speed, float mass)
+        {
+            return 0.5f * mass * Mathf.Pow(speed, 2);
+        }
+
+        public static float GetSpeed(float energy, float mass)
+        {
+            return Mathf.Sqrt(energy / (0.5f * mass));
+        }
+
         #endregion
 
         #region RopeGenerator
