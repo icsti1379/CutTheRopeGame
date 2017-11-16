@@ -33,7 +33,7 @@ namespace Custom
             if (matrixA.Length != 3 || matrixB.Length != 3)
             {
                 return new Vector3[3];
-                Debug.LogError("Error!");
+                //Debug.LogError("Error!");
             }
 
             Vector3[] result = new Vector3[3];
@@ -125,7 +125,6 @@ namespace Custom
             Vector3[] result = new Vector3[3];
 
             float a = 2f / 5f * Mass * Mathf.Pow(radius, 2f);
-            Debug.Log("a is " + a);
 
             result[0] = new Vector3(a, 0, 0);
             result[1] = new Vector3(0, a, 0);

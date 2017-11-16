@@ -13,13 +13,31 @@ namespace Player
         private int score;
         //Score counter text
         public Text countText;
-        //Quest
-        public static int questCompleted;
+
+        //Physics texts
+        public Text energyText;
+        public Text speedText;
+        public Text directionText;
+
         #endregion
 
         #region variables
         //Set the y axes of connected anchor as distance from chain end
         public float distanceFromChainEnd = 0.6f;
+        //QuestItem collected
+        public static int questCompleted;
+        #endregion
+
+        #region PhysicsFormules
+        public float Mass = 1;
+        public float Radius = 0.5f;
+        public float Energy;
+        public float Speed;
+        public Vector3 Direction;
+
+        //UI
+        public float pulseEnergy;
+        public Vector3 pulseVector;
         #endregion
 
         #region Start
@@ -36,14 +54,11 @@ namespace Player
 
         private static void ForceWeight(Rigidbody2D rb)
         {
-            rb.mass = 10;
+            rb.mass = 8;
             float mass = rb.mass;
 
             float inertia = rb.inertia;
             Vector2 velocity = rb.velocity;
-
-
-
         }
 
         #endregion
@@ -71,12 +86,7 @@ namespace Player
         }
         #endregion
 
-        public float Mass = 1;
-        public float Radius = 0.5f;
-        public float Energy;
-        public float Speed;
-        public Vector3 Direction;
-
+        #region Update
         void Update()
         {
             Rigidbody2D rigid = GetComponent<Rigidbody2D>();
@@ -86,8 +96,12 @@ namespace Player
             Energy = Custom.Physics.GetEnergy(Speed, Mass);
 
             Direction = rigid.velocity.normalized;
-        }
 
+            PhysicsUI();
+        }
+        #endregion
+
+        #region OnTriggerEnter
         /// <summary>
         /// Method for doing sth on trigger enter
         /// </summary>
@@ -125,24 +139,39 @@ namespace Player
                 Debug.Log("QuestCompleted is:" + questCompleted);
             }
         }
+        #endregion
 
+        #region PhysicsCalculating
         private void OnCollisionEnter2D(Collision2D collision)
         {
-            Debug.Log("Debug Normal: " + collision.contacts[0].normal);
-            Debug.Log("Debug contact: " + collision.contacts[0].point);
 
             Custom.Physics.Pulse pulse = Custom.Physics.CalculatePulse(this, collision.contacts[0]);
 
-            Debug.LogWarning("Pulse Direction: " + pulse.Direction);
-            Debug.LogWarning("Pulse Energy: " + pulse.Energy);
+            pulseVector = new Vector3(0,0,0) + pulse.Direction;
+            pulseEnergy = pulse.Energy;
+            //Debug.LogWarning("Pulse Energy: " + pulse.Energy);
+            PhysicsUI();
+        }
+        #endregion
+
+        #region GameUI
+        /// <summary>
+        /// Set the text of the physics on UI
+        /// </summary>
+        public void PhysicsUI()
+        {
+            speedText.text = "Speed: " + Speed.ToString();
+            energyText.text = "Kinetic energy: " + pulseEnergy.ToString();
+            directionText.text = "Direction: " + pulseVector.ToString();
         }
 
         /// <summary>
-        /// Set the text of the UI
+        /// Set the text of counter on the UI
         /// </summary>
         public void SetCountText()
         {
             countText.text = "Count: " + score.ToString();
         }
+        #endregion
     }
 }

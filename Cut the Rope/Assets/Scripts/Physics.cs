@@ -16,8 +16,6 @@ namespace Custom
         /// <summary>
         /// Gets the gravitational force between two MassObjects.
         /// </summary>
-        /// <param name="a">The first MassObject.</param>
-        /// <param name="b">The second MassObject.</param>
         /// <returns>The gravitational force.</returns>
         public static float GetGravitationalForce(float massA, double massB, float Distance, float gravitationalConstant)
         {
@@ -27,8 +25,6 @@ namespace Custom
         /// <summary>
         /// Calculates the outcome of a Collision between two MassObjects.
         /// </summary>
-        /// <param name="massObject1">The first MassObject.</param>
-        /// <param name="massObject2">The second MassObject.</param>
         /// <returns>The rotational pulse.</returns>
         public static Pulse CalculatePulse(Weight weight, ContactPoint2D contactPoint)
         {
@@ -176,86 +172,6 @@ namespace Custom
             float J;      // Gesamtimpuls. [Nicht zu verwechseln mit j (Wirkender linearer Impuls!)]
 
             J = delta_v / (1 / m + Vector3.Dot(n, Vector3.Cross(Math.VectorMatrixProduct(Vector3.Cross(qRel, n), I_inverse), qRel)));
-
-            Debug.Log("j: " + J);
-
-            // _________________________________________
-            //
-            // -----------------------------------------
-            // Errechnung der Separierungsgeschwindigkeit vs.
-            // -----------------------------------------
-            // _________________________________________
-
-            //Vector3 qo;     // Lineare Geschwindigkeit durch Rotation (ohne linearen Anteil).
-
-            //qo = Vector3.Cross(O, qRel);
-
-            //// -----------------------------------------
-
-            //Vector3 vr;     // Gesamtgeschwindigkeit.
-
-            //vr = qo + massObject1.RotationVector;
-
-            //// -----------------------------------------
-
-            //Vector3 v;      // Gesamtgeschwindigkeit in Kontaktkoordinaten.
-
-            //v = Math.VectorMatrixProduct(vr, M_basis_inverse);
-
-            //// -----------------------------------------
-
-            //float vs;       // Separierungsgeschwindigkeit.
-
-            //vs = vr.x;
-
-            //// -----------------------------------------
-
-            //float delta_vs;
-
-            ////delta_vs = -(1 + massObject1.C) * vs;
-
-            //// -----------------------------------------
-
-
-            ////J = delta_vs / (1 / m + Vector3.Dot(Vector3.Cross(Math.VectorMatrixProduct(Math.VectorMatrixProduct(Math.VectorMatrixProduct(Vector3.Cross(qRel, n), M_basis_inverse), I_inverse), M_basis), qRel), n));
-
-            //// -----------------------------------------
-
-            //Vector3 g_contact;  // Gesamtimpuls in Kontaktkoordinaten.
-
-            //g_contact = new Vector3(J, 0, 0);
-
-            //// -----------------------------------------
-
-            //Vector3 g_world;    // Gesamtimpuls in Weltkoordinaten.
-
-            //g_world = Math.VectorMatrixProduct(g_contact, M_basis);
-
-            //// -----------------------------------------
-
-            //Vector3 delta_p;    // Änderung der linearen Geschwindigkeit.
-
-            //delta_p = new Vector3(g_world.x / m, g_world.y / m, g_world.z / m);
-
-            //// -----------------------------------------
-
-            //Vector3 delta_0;    // Änderung der Rotationsgeschwindigkeit.
-
-            //delta_0 = Math.VectorMatrixProduct(Math.VectorMatrixProduct(Math.VectorMatrixProduct(Vector3.Cross(qRel, g_world), M_inverse), I_inverse), M);
-
-            //// -----------------------------------------
-
-            //Debug.Log("deltaV: " + delta_v);
-            //Debug.Log("u_contact: " + u_contact);
-            //Debug.Log("O: " + O);
-            //Debug.Log("qRel: " + qRel);
-            //Debug.Log("qo: " + qo);
-            //Debug.Log("vr: " + vr);
-            //Debug.Log("v: " + v);
-            //Debug.Log("vs: " + vs);
-            //Debug.Log("delta_vs: " + delta_vs);
-            //Debug.Log("J: " + J);
-            //Debug.Log(delta_0);
 
             result.Direction = n;
             result.Energy = J;
