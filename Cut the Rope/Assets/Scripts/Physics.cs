@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Player;
 
 namespace Custom
 {
@@ -10,22 +11,6 @@ namespace Custom
         {
             public Vector3 Direction;
             public float Energy;
-        }
-
-        public static List<Vector3> n;
-        public static List<Vector3> j;
-        public static List<float> j_skalar;
-        public static List<Vector3> contact;
-
-        /// <summary>
-        /// Gets the gravitational force between two MassObjects.
-        /// </summary>
-        /// <param name="a">The first MassObject.</param>
-        /// <param name="b">The second MassObject.</param>
-        /// <returns>The gravitational force.</returns>
-        public static float GetGravitationalForce(MassObject a, MassObject b, float gravitationalConstant)
-        {
-            return gravitationalConstant * ((float)a.Mass * (float)b.Mass) / Mathf.Pow(Vector3.Distance(a.transform.position, b.transform.position), 2);
         }
 
         /// <summary>
@@ -45,11 +30,11 @@ namespace Custom
         /// <param name="massObject1">The first MassObject.</param>
         /// <param name="massObject2">The second MassObject.</param>
         /// <returns>The rotational pulse.</returns>
-        public static Pulse CalculatePulse(MassObject massObject1, MassObject massObject2, ContactPoint contactPoint)
+        public static Pulse CalculatePulse(Weight weight, float mass2, ContactPoint contactPoint)
         {
             Pulse result = new Pulse();
 
-            float m = (float)massObject1.Mass;
+            float m = weight.mass;
 
             // _________________________________________
             //
@@ -62,7 +47,7 @@ namespace Custom
 
             Vector3[] M_inverse;
 
-            M = Math.GetRotationMatrix(massObject1.transform.rotation);
+            M = Math.GetRotationMatrix(weight.transform.rotation);
 
             M_inverse = Math.TransposeMatrix(M);
 
@@ -75,7 +60,7 @@ namespace Custom
 
             Vector3[] I;
 
-            I = Math.GetTensorOfSphere(massObject1.Radius, (float)massObject1.Mass);
+            I = Math.GetTensorOfSphere(weight.radius, weight.mass);
 
             Vector4 column0 = new Vector4(I[0].x, I[0].y, I[0].z, 0);
             Vector4 column1 = new Vector4(I[1].x, I[1].y, I[1].z, 0);
@@ -140,7 +125,7 @@ namespace Custom
             Vector3 p;      // Ortsvektor des Objektschwerpunktes.
 
             q = Math.VectorMatrixProduct(contactPoint.point, M_basis_inverse);
-            p = Math.VectorMatrixProduct(massObject1.transform.position, M_basis_inverse);
+            p = Math.VectorMatrixProduct(weight.transform.position, M_basis_inverse);
 
             qRel = q - p;
 
@@ -149,7 +134,7 @@ namespace Custom
             Vector3 u;      // Rotationsimpuls.
             Vector3 j;      // Wirkender linearer Impuls. [Nicht zu verwechseln mit J (Gesamtimpuls!)]
 
-            j = massObject2.Energy * massObject2.Direction - massObject1.Energy * massObject1.Direction;
+            j = 0 * 0 - weight.Energy * weight.Direction;
             u = Vector3.Cross(qRel, j);
 
             // -----------------------------------------
@@ -201,64 +186,64 @@ namespace Custom
             // -----------------------------------------
             // _________________________________________
 
-            Vector3 qo;     // Lineare Geschwindigkeit durch Rotation (ohne linearen Anteil).
+            //Vector3 qo;     // Lineare Geschwindigkeit durch Rotation (ohne linearen Anteil).
 
-            qo = Vector3.Cross(O, qRel);
+            //qo = Vector3.Cross(O, qRel);
 
-            // -----------------------------------------
+            //// -----------------------------------------
 
-            Vector3 vr;     // Gesamtgeschwindigkeit.
+            //Vector3 vr;     // Gesamtgeschwindigkeit.
 
-            vr = qo + massObject1.RotationVector;
+            //vr = qo + massObject1.RotationVector;
 
-            // -----------------------------------------
+            //// -----------------------------------------
 
-            Vector3 v;      // Gesamtgeschwindigkeit in Kontaktkoordinaten.
+            //Vector3 v;      // Gesamtgeschwindigkeit in Kontaktkoordinaten.
 
-            v = Math.VectorMatrixProduct(vr, M_basis_inverse);
+            //v = Math.VectorMatrixProduct(vr, M_basis_inverse);
 
-            // -----------------------------------------
+            //// -----------------------------------------
 
-            float vs;       // Separierungsgeschwindigkeit.
+            //float vs;       // Separierungsgeschwindigkeit.
 
-            vs = vr.x;
+            //vs = vr.x;
 
-            // -----------------------------------------
+            //// -----------------------------------------
 
-            float delta_vs;
+            //float delta_vs;
 
-            //delta_vs = -(1 + massObject1.C) * vs;
+            ////delta_vs = -(1 + massObject1.C) * vs;
 
-            // -----------------------------------------
+            //// -----------------------------------------
 
 
-            //J = delta_vs / (1 / m + Vector3.Dot(Vector3.Cross(Math.VectorMatrixProduct(Math.VectorMatrixProduct(Math.VectorMatrixProduct(Vector3.Cross(qRel, n), M_basis_inverse), I_inverse), M_basis), qRel), n));
+            ////J = delta_vs / (1 / m + Vector3.Dot(Vector3.Cross(Math.VectorMatrixProduct(Math.VectorMatrixProduct(Math.VectorMatrixProduct(Vector3.Cross(qRel, n), M_basis_inverse), I_inverse), M_basis), qRel), n));
 
-            // -----------------------------------------
+            //// -----------------------------------------
 
-            Vector3 g_contact;  // Gesamtimpuls in Kontaktkoordinaten.
+            //Vector3 g_contact;  // Gesamtimpuls in Kontaktkoordinaten.
 
-            g_contact = new Vector3(J, 0, 0);
+            //g_contact = new Vector3(J, 0, 0);
 
-            // -----------------------------------------
+            //// -----------------------------------------
 
-            Vector3 g_world;    // Gesamtimpuls in Weltkoordinaten.
+            //Vector3 g_world;    // Gesamtimpuls in Weltkoordinaten.
 
-            g_world = Math.VectorMatrixProduct(g_contact, M_basis);
+            //g_world = Math.VectorMatrixProduct(g_contact, M_basis);
 
-            // -----------------------------------------
+            //// -----------------------------------------
 
-            Vector3 delta_p;    // Änderung der linearen Geschwindigkeit.
+            //Vector3 delta_p;    // Änderung der linearen Geschwindigkeit.
 
-            delta_p = new Vector3(g_world.x / m, g_world.y / m, g_world.z / m);
+            //delta_p = new Vector3(g_world.x / m, g_world.y / m, g_world.z / m);
 
-            // -----------------------------------------
+            //// -----------------------------------------
 
-            Vector3 delta_0;    // Änderung der Rotationsgeschwindigkeit.
+            //Vector3 delta_0;    // Änderung der Rotationsgeschwindigkeit.
 
-            delta_0 = Math.VectorMatrixProduct(Math.VectorMatrixProduct(Math.VectorMatrixProduct(Vector3.Cross(qRel, g_world), M_inverse), I_inverse), M);
+            //delta_0 = Math.VectorMatrixProduct(Math.VectorMatrixProduct(Math.VectorMatrixProduct(Vector3.Cross(qRel, g_world), M_inverse), I_inverse), M);
 
-            // -----------------------------------------
+            //// -----------------------------------------
 
             //Debug.Log("deltaV: " + delta_v);
             //Debug.Log("u_contact: " + u_contact);
@@ -274,10 +259,6 @@ namespace Custom
 
             result.Direction = n;
             result.Energy = J;
-
-            Physics.j.Add(j);
-            Physics.j_skalar.Add(j_skalar);
-            Physics.n.Add(n);
 
             return result;
         }
