@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using System.Collections.Generic;
 
 namespace Player
 {
@@ -45,16 +46,6 @@ namespace Player
 
         }
 
-        public static float GetEnergy(float speed, float mass)
-        {
-            return 0.5f * mass * Mathf.Pow(speed, 2);
-        }
-
-        public static float GetSpeed(float energy, float mass)
-        {
-            return Mathf.Sqrt(energy / (0.5f * mass));
-        }
-
         #endregion
 
         #region RopeGenerator
@@ -79,6 +70,23 @@ namespace Player
             joint.connectedAnchor = new Vector2(0f, -distanceFromChainEnd);
         }
         #endregion
+
+        public float Mass = 1;
+        public float Radius = 0.5f;
+        public float Energy;
+        public float Speed;
+        public Vector3 Direction;
+
+        void Update()
+        {
+            Rigidbody2D rigid = GetComponent<Rigidbody2D>();
+
+            Speed = Mathf.Abs(rigid.velocity.x) + Mathf.Abs(rigid.velocity.y);
+
+            Energy = Custom.Physics.GetEnergy(Speed, Mass);
+
+            Direction = rigid.velocity.normalized;
+        }
 
         /// <summary>
         /// Method for doing sth on trigger enter
@@ -116,6 +124,17 @@ namespace Player
                 SetCountText();
                 Debug.Log("QuestCompleted is:" + questCompleted);
             }
+        }
+
+        private void OnCollisionEnter2D(Collision2D collision)
+        {
+            Debug.Log("Debug Normal: " + collision.contacts[0].normal);
+            Debug.Log("Debug contact: " + collision.contacts[0].point);
+
+            Custom.Physics.Pulse pulse = Custom.Physics.CalculatePulse(this, collision.contacts[0]);
+
+            Debug.LogWarning("Pulse Direction: " + pulse.Direction);
+            Debug.LogWarning("Pulse Energy: " + pulse.Energy);
         }
 
         /// <summary>

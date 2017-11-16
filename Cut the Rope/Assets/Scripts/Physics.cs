@@ -30,11 +30,11 @@ namespace Custom
         /// <param name="massObject1">The first MassObject.</param>
         /// <param name="massObject2">The second MassObject.</param>
         /// <returns>The rotational pulse.</returns>
-        public static Pulse CalculatePulse(Weight weight, float mass2, ContactPoint contactPoint)
+        public static Pulse CalculatePulse(Weight weight, ContactPoint2D contactPoint)
         {
             Pulse result = new Pulse();
 
-            float m = weight.mass;
+            float m = weight.Mass;
 
             // _________________________________________
             //
@@ -60,7 +60,7 @@ namespace Custom
 
             Vector3[] I;
 
-            I = Math.GetTensorOfSphere(weight.radius, weight.mass);
+            I = Math.GetTensorOfSphere(weight.Radius, weight.Mass);
 
             Vector4 column0 = new Vector4(I[0].x, I[0].y, I[0].z, 0);
             Vector4 column1 = new Vector4(I[1].x, I[1].y, I[1].z, 0);
@@ -134,7 +134,7 @@ namespace Custom
             Vector3 u;      // Rotationsimpuls.
             Vector3 j;      // Wirkender linearer Impuls. [Nicht zu verwechseln mit J (Gesamtimpuls!)]
 
-            j = 0 * 0 - weight.Energy * weight.Direction;
+            j = weight.Energy * weight.Direction;
             u = Vector3.Cross(qRel, j);
 
             // -----------------------------------------
@@ -145,7 +145,7 @@ namespace Custom
             float c = j.magnitude;
             float b = Math.GetOrthoToAxis(Vector3.zero, n, j);
 
-            j_skalar = Mathf.Sqrt(Mathf.Pow(c,2) - Mathf.Pow(b,2));
+            j_skalar = Mathf.Sqrt(Mathf.Pow(c, 2) - Mathf.Pow(b, 2));
             u_contact = Vector3.Cross(qRel, j_skalar * n);
 
             // -----------------------------------------
@@ -163,7 +163,7 @@ namespace Custom
 
             v_rot = Vector3.Cross(O, qRel);
 
-            Vector3 rotationsAchse = Vector3.Cross(contactPoint.point, contactPoint.point + j_skalar * n).normalized;
+            Vector3 rotationsAchse = Vector3.Cross(contactPoint.point, (Vector3)contactPoint.point + j_skalar * n).normalized;
 
             // -----------------------------------------
 
@@ -272,19 +272,5 @@ namespace Custom
         {
             return Mathf.Sqrt(energy / (0.5f * mass));
         }
-
-        //protected void ConvertSpeedToEnergy()
-        //{
-        //    Vector3 movement = Speed * Direction * Mass;
-
-        //    Direction = movement.normalized;
-
-        //    float divider = Mathf.Abs(Direction.x) + Mathf.Abs(Direction.y) + Mathf.Abs(Direction.z);
-
-        //    if (divider != 0)
-        //        Energy = (Mathf.Abs(movement.x) + Mathf.Abs(movement.y) + Mathf.Abs(movement.z)) / divider;
-        //    else
-        //        Energy = 0;
-        //}
     }
 }
