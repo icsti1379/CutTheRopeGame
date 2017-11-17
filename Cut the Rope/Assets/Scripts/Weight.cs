@@ -90,13 +90,14 @@ namespace Player
         void Update()
         {
             Rigidbody2D rigid = GetComponent<Rigidbody2D>();
-
+            
             Speed = Mathf.Abs(rigid.velocity.x) + Mathf.Abs(rigid.velocity.y);
 
             Energy = Custom.Physics.GetEnergy(Speed, Mass);
 
             Direction = rigid.velocity.normalized;
 
+            speedText.text = "Speed: " + Speed.ToString();
             PhysicsUI();
         }
         #endregion
@@ -160,7 +161,6 @@ namespace Player
         /// </summary>
         public void PhysicsUI()
         {
-            speedText.text = "Speed: " + Speed.ToString();
             energyText.text = "Kinetic energy: " + pulseEnergy.ToString();
             directionText.text = "Direction: " + pulseVector.ToString();
         }

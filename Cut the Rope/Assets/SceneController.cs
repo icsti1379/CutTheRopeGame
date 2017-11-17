@@ -12,6 +12,9 @@ namespace SceneController
         string level1 = "Level1";
         string level2 = "Level2";
         string level3 = "Level3";
+        string level4 = "Level4";
+        string level5 = "Level5";
+        string test = "Test";
 
         public void Awake()
         {
@@ -39,6 +42,18 @@ namespace SceneController
             else if (Input.GetKeyDown(KeyCode.D))
             {
                 SceneManager.LoadScene(level3);
+            }
+            else if (Input.GetKeyDown(KeyCode.F))
+            {
+                SceneManager.LoadScene(level4);
+            }
+            else if (Input.GetKeyDown(KeyCode.G))
+            {
+                SceneManager.LoadScene(level5);
+            }
+            else if (Input.GetKeyDown(KeyCode.T))
+            {
+                SceneManager.LoadScene(test);
             }
         }
     }
